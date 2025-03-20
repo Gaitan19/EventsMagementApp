@@ -25,16 +25,55 @@ namespace EventsManagementApp.Repositories
             _context = context;
         }
 
+        //public IEnumerable<Event> GetAll() =>
+        //    _context.Events
+        //        .Include(e => e.Organizer)
+        //        .Include(e => e.Registrations)
+        //            .ThenInclude(r => r.Participant) // <<--- este es el include anidado
+        //        .Include(e => e.Sponsors)
+        //        .ToList();
+
         public IEnumerable<Event> GetAll() =>
-            _context.Events
-            .Include(e => e.Organizer)
-            .Include(e => e.Registrations)
-            .Include(e => e.Sponsors)
-            .ToList();
+                _context.Events
+                .Select(e => new Event
+                {
+                    Id = e.Id,
+                    Name = e.Name,
+                    Description = e.Description,
+                    Date = e.Date,
+                    Location = e.Location,
+                    MaxCapacity = e.MaxCapacity,
+                    OrganizerId = e.OrganizerId,
+                    Organizer = new Organizer {
+                        Id = e.Organizer.Id,
+                        Name = e.Organizer.Name,
+                        Email = e.Organizer.Email,
+                        Phone = e.Organizer.Phone
+                    },
+                    Registrations = e.Registrations,
+                    Sponsors = e.Sponsors
+                }).ToList();
         public Event GetById(Guid id) => _context.Events
-            .Include(e => e.Organizer)
-            .Include(e => e.Registrations)
-            .Include(e => e.Sponsors)
+             .Select(e => new Event
+             {
+                 Id = e.Id,
+                 Name = e.Name,
+                 Description = e.Description,
+                 Date = e.Date,
+                 Location = e.Location,
+                 MaxCapacity = e.MaxCapacity,
+                 OrganizerId = e.OrganizerId,
+                 Organizer = e.Organizer,
+                 Registrations = (ICollection<Registration>)e.Registrations.Select(r => new Registration
+                 { 
+                   Id = r.Id,
+                   ParticipantId = r.ParticipantId,
+                   Participant = r.Participant,
+                   EventId = r.EventId
+
+                 }),
+                 Sponsors = e.Sponsors
+             })
             .FirstOrDefault(e => e.Id == id);
 
         public void Add(Event eventEntity) => _context.Events.Add(eventEntity);

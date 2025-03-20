@@ -9,6 +9,6 @@ namespace EventsManagementApp.Models
         public string Description { get; set; }
 
         public Guid EventId { get; set; }
-        //public Event Event { get; set; }
+        public Event Event { get; set; }
     }
 }

@@ -10,6 +10,6 @@ namespace EventsManagementApp.Models
         public string Email { get; set; }
         public string Phone { get; set; }
 
-        //public ICollection<Event> Events { get; set; } = new List<Event>();
+        public ICollection<Event> Events { get; set; } = new List<Event>();
     }
 }

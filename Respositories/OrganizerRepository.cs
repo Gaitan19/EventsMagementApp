@@ -26,9 +26,29 @@ namespace EventsManagementApp.Repositories
             _context = context;
         }
 
-        public IEnumerable<Organizer> GetAll() => _context.Organizers.ToList();
+        public IEnumerable<Organizer> GetAll() => 
+            _context.Organizers
+            .Select(o => new Organizer
+            {
+                Id = o.Id,
+                Name = o.Name,
+                Email = o.Email,
+                Phone = o.Phone,
+                Events = o.Events
 
-        public Organizer GetById(Guid id) => _context.Organizers.Find(id);
+            }).ToList();
+
+
+        public Organizer GetById(Guid id) => _context.Organizers
+            .Select(o => new Organizer
+            {
+                Id = o.Id,
+                Name = o.Name,
+                Email = o.Email,
+                Phone = o.Phone,
+                Events = o.Events
+
+            }).FirstOrDefault(o => o.Id == id);
 
         public void Add(Organizer organizer) => _context.Organizers.Add(organizer);
 
