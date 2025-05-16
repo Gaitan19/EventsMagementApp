@@ -26,7 +26,18 @@ namespace EventsManagementApp.Repositories
         }
 
         public IEnumerable<Registration> GetAll() => _context.Registrations.ToList();
-        public Registration GetById(Guid id) => _context.Registrations.Find(id);
+        public Registration GetById(Guid id) => _context.Registrations
+            .Select(r => new Registration
+        {
+
+            Id = r.Id,
+            EventId = r.EventId,
+            ParticipantId = r.ParticipantId,
+            RegistrationDate = r.RegistrationDate,
+            Event = r.Event,
+            Participant = r.Participant 
+            }).FirstOrDefault(r => r.Id == id);
+
         public void Add(Registration registration) => _context.Registrations.Add(registration);
         public void Update(Registration registration) => _context.Registrations.Update(registration);
         public void Delete(Guid id) => _context.Registrations.Remove(GetById(id));
