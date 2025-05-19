@@ -26,9 +26,15 @@ namespace EventsManagementApp.Repositories
             _context = context;
         }
 
-        public IEnumerable<Sponsor> GetAll() => _context.Sponsors.ToList();
+        public IEnumerable<Sponsor> GetAll() =>
+            _context.Sponsors
+                .Include(s => s.Event)
+                .ToList();
 
-        public Sponsor GetById(Guid id) => _context.Sponsors.Find(id);
+        public Sponsor GetById(Guid id) =>
+            _context.Sponsors
+                .Include(s => s.Event)
+                .FirstOrDefault(s => s.Id == id);
 
         public void Add(Sponsor sponsor) => _context.Sponsors.Add(sponsor);
 

@@ -25,18 +25,17 @@ namespace EventsManagementApp.Repositories
             _context = context;
         }
 
-        public IEnumerable<Registration> GetAll() => _context.Registrations.ToList();
-        public Registration GetById(Guid id) => _context.Registrations
-            .Select(r => new Registration
-        {
+        public IEnumerable<Registration> GetAll() =>
+           _context.Registrations
+               .Include(r => r.Event)
+               .Include(r => r.Participant)
+               .ToList();
 
-            Id = r.Id,
-            EventId = r.EventId,
-            ParticipantId = r.ParticipantId,
-            RegistrationDate = r.RegistrationDate,
-            Event = r.Event,
-            Participant = r.Participant 
-            }).FirstOrDefault(r => r.Id == id);
+        public Registration GetById(Guid id) =>
+            _context.Registrations
+                .Include(r => r.Event)
+                .Include(r => r.Participant)
+                .FirstOrDefault(r => r.Id == id);
 
         public void Add(Registration registration) => _context.Registrations.Add(registration);
         public void Update(Registration registration) => _context.Registrations.Update(registration);
